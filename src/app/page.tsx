@@ -1,69 +1,96 @@
-import Image from "next/image";
+import { NextStep } from '@/components/JourneyNav';
+import { CriteriaTable, Implications, ScenarioControls } from '@/components/ScenarioWorkbench';
+import { Evidence, PageHeader, Section } from '@/components/ui';
+import { REFERENCE_COMMIT, REFERENCE_REPO, assumptions, constraints, inspected, objective, openQuestions, stakeholders } from '@/data/brief';
 
-export default function Home() {
+export default function CustomerBrief() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <PageHeader
+        step="Step 1 · Customer Brief"
+        title="Heritage House wants AI photo analysis without risking private family stories."
+        lede="A discovery summary: what they are trying to achieve, who decides, what the code actually shows, and what we would need to agree before recommending anything."
+      />
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="card p-6">
+          <p className="eyebrow">Business objective</p>
+          <p className="mt-2 leading-relaxed">{objective.business}</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="card p-6">
+          <p className="eyebrow">Intended outcome of this engagement</p>
+          <p className="mt-2 leading-relaxed">{objective.outcome}</p>
+          <p className="mt-3 text-sm text-muted">{objective.hypothesis}</p>
         </div>
-      </main>
-    </div>
+      </div>
+
+      <Section title="Stakeholders and decision criteria" kicker="Who decides">
+        <div className="card overflow-x-auto">
+          <table className="data">
+            <thead><tr><th>Role (fictional)</th><th>Part in decision</th><th>What they need to see</th></tr></thead>
+            <tbody>
+              {stakeholders.map((s) => (
+                <tr key={s.role}><td className="font-medium">{s.role}</td><td className="text-muted">{s.type}</td><td>{s.criteria}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Section>
+
+      <Section title="Current architecture: what the reference repository establishes" kicker="Grounded in code">
+        <p className="mb-4 max-w-3xl text-sm text-muted">
+          From reading{' '}
+          <a className="underline" href={REFERENCE_REPO} target="_blank" rel="noreferrer">fatoldnerd/memoryartifact</a>{' '}
+          at commit <code>{REFERENCE_COMMIT}</code>. Anything not shown here (hosting, traffic, cost) is unknown, not assumed.
+        </p>
+        <ul className="grid gap-2">
+          {inspected.map((f) => (
+            <li key={f.id} className="card flex items-start gap-3 p-4">
+              <Evidence kind="inspected" />
+              <span className="flex-1 text-sm leading-relaxed">{f.statement}</span>
+              {f.source && <a href={f.source} target="_blank" rel="noreferrer" className="shrink-0 text-xs text-muted underline">source</a>}
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section title="Constraints, assumptions and open questions" kicker="What we know, assume and must ask">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="card p-5">
+            <h3 className="font-semibold">Constraints</h3>
+            <ul className="mt-3 grid gap-2 text-sm">
+              {constraints.map((c) => <li key={c} className="leading-relaxed">— {c}</li>)}
+            </ul>
+          </div>
+          <div className="card p-5">
+            <h3 className="font-semibold">Assumptions</h3>
+            <ul className="mt-3 grid gap-3 text-sm">
+              {assumptions.map((a) => (
+                <li key={a.id} className="leading-relaxed"><Evidence kind="assumption" /> <span className="ml-1">{a.statement}</span></li>
+              ))}
+            </ul>
+          </div>
+          <div className="card p-5">
+            <h3 className="font-semibold">Unanswered questions</h3>
+            <ol className="mt-3 grid list-decimal gap-2 pl-5 text-sm">
+              {openQuestions.map((q) => <li key={q.id} className="leading-relaxed">{q.statement}</li>)}
+            </ol>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Scenario and its implications" kicker="Change a control and watch the recommendations move">
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+          <div className="lg:sticky lg:top-6"><ScenarioControls /></div>
+          <Implications />
+        </div>
+      </Section>
+
+      <Section title="Technical acceptance criteria" kicker="Agreed in discovery (fictional) plus any added by the scenario">
+        <CriteriaTable />
+      </Section>
+
+      <NextStep current="/" />
+    </>
   );
 }
