@@ -79,16 +79,22 @@ npm run typecheck # runs `next typegen` first so route types exist
 npm run build
 ```
 
-## Preparing a Vercel deployment
+## Vercel deployment
 
-Not deployed yet. The steps, when you are ready:
+**Live demo:** https://customer-migration-lab.vercel.app
 
-1. Push the repository to GitHub and import it in Vercel (framework preset: Next.js). No `vercel.json` is required.
-2. **Function region:** Vercel Functions run in `iad1` (US East) by default. For an EMEA audience, set the project's function region in Project Settings → Functions (for example `fra1`, `lhr1` or `cdg1`). In a real engagement, choose the region next to the Firebase project.
-3. **Environment variables:** none are required for the simulated demo. If you enable Gemini, add `AI_PROVIDER` and `GOOGLE_GEMINI_API_KEY` as **Sensitive** variables for the environments that need them, or use `vercel env add`.
-4. **Fault injection:** it stays enabled because the Validation Lab depends on it. In a real customer system, set `FAULT_INJECTION=disabled` in production.
-5. **Deployment Protection:** keep previews protected and consider protecting production until you have reviewed it.
-6. After deploying, run the Validation Lab on the deployment. The environment is recorded as `vercel-preview` or `vercel-production`, so those measurements stay separate from local ones. Check `x-vercel-cache` on a repeated public image request to confirm CDN behaviour.
+This is a deployment of the demonstration app itself, with simulated AI. It is not a Heritage House candidate deployment, and nothing measured on it says anything about Heritage House's current or future hosting.
+
+How it is set up:
+
+1. **Git integration:** the Vercel project is connected to this GitHub repository (framework preset: Next.js). Pushes to `main` deploy to production; other branches get preview deployments.
+2. **Function region:** `vercel.json` sets `"regions": ["lhr1"]` (London), replacing the `iad1` (US East) default. In a real engagement, choose the region next to the Firebase project.
+3. **Environment variables:** none are set, so the deployment runs simulated AI. Do not add `GOOGLE_GEMINI_API_KEY` to a publicly accessible deployment: the demo bearer tokens in `src/lib/analysis/auth.ts` are fixed and public, so they would not protect the quota. If you enable Gemini on a protected deployment, add `AI_PROVIDER` and `GOOGLE_GEMINI_API_KEY` as **Sensitive** variables (`vercel env add`).
+4. **Fault injection:** enabled, because the Validation Lab depends on it. In a real customer system, set `FAULT_INJECTION=disabled` in production.
+5. **Access:** production is currently public. Previews follow the project's Deployment Protection settings.
+6. **Measurements:** run the Validation Lab on the deployment. The environment is recorded as `vercel-preview` or `vercel-production`, so those measurements stay separate from local ones. Check `x-vercel-cache` on a repeated public image request to confirm CDN behaviour.
+
+To deploy manually from a linked checkout: `vercel` (preview) or `vercel --prod` (production). `GET /api/health` reports the serving function's `vercelRegion`.
 
 Platform facts used, from official docs consulted on 2026-10-23:
 

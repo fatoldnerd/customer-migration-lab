@@ -81,6 +81,7 @@ npm run build      # production build; run before claiming completion
 - Demo auth uses fixed bearer tokens (`src/lib/analysis/auth.ts`) in place of Firebase `verifyIdToken`. Keep it clearly labelled as simulated.
 - Timeouts are not retried automatically; transient 5xx/429 are retried once with jitter.
 - Browser verification screenshots go in `.playwright-mcp/` (gitignored).
+- Deployed on Vercel at https://customer-migration-lab.vercel.app via Git integration (push to `main` deploys production). `vercel.json` pins functions to `lhr1`. No environment variables are set; keep it simulated while production is public.
 
 ## Verification expectations
 
