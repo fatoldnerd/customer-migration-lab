@@ -159,11 +159,22 @@ export const CHECKS: CheckDef[] = [
   {
     id: 'public-cacheable',
     name: 'Public collection image is marked shared-cacheable',
-    expected: '200 with public, s-maxage',
+    expected: '200 with public, s-maxage (on Vercel: repeat request served from the CDN cache)',
     run: async (f) => {
-      const res = await f('/api/objects/carriage-clock/image', { cache: 'no-store' });
+      const url = '/api/objects/carriage-clock/image';
+      const res = await f(url, { cache: 'no-store' });
       const cc = res.headers.get('cache-control') ?? '';
-      return { passed: res.status === 200 && /public/.test(cc) && /s-maxage/.test(cc), observed: `${res.status} [${cc}]` };
+      const first = res.headers.get('x-vercel-cache');
+      if (first === null) {
+        return { passed: res.status === 200 && /public/.test(cc) && /s-maxage/.test(cc), observed: `${res.status} [${cc}]` };
+      }
+      // Vercel's CDN consumes s-maxage and strips it from the response, so check the cache status instead.
+      const again = await f(url, { cache: 'no-store' });
+      const second = again.headers.get('x-vercel-cache') ?? '';
+      return {
+        passed: res.status === 200 && again.status === 200 && /public/.test(cc) && /^(HIT|STALE)$/.test(second),
+        observed: `${res.status} [${cc}] x-vercel-cache ${first} → ${second}`,
+      };
     },
   },
 ];
