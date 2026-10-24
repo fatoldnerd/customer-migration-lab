@@ -1,7 +1,7 @@
 # Five-minute demonstration script
 
 **Audience:** Heritage House technical and business stakeholders (role-played by the interview panel).
-**Set-up:** run `npm run build && npm start`. Open `/` in a full-width window. Before you start, run the Validation Lab once and reset the scenario to workshop defaults (photographs **private**). Have `/decision` ready in a second tab.
+**Set-up:** present from the live demo at https://customer-migration-lab.vercel.app, or locally with `npm run build && npm start`. Open `/` in a full-width window. Before you start, run the Validation Lab once in the same browser (on the live demo its results are recorded as `vercel-production`) and reset the scenario to workshop defaults (photographs **private**). Have `/decision` ready in a second tab.
 
 Timings are a guide. Spoken lines are in quotes; stage directions are in italics.
 

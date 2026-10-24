@@ -73,7 +73,7 @@ The Gemini path uses the REST `generateContent` endpoint so that the timeout can
 ## Verification
 
 ```bash
-npm test          # 56 Vitest tests: rules, plan derivation, validation, retry/timeout, route handlers, cost, stats
+npm test          # 60 Vitest tests: rules, plan derivation, validation, retry/timeout, route handlers, cost, stats, cache check
 npm run lint
 npm run typecheck # runs `next typegen` first so route types exist
 npm run build
